@@ -35,7 +35,7 @@ void vs1053_init() {
 	dreq_gpio_conf.pull_up_en =	GPIO_PULLUP_DISABLE;
 	dreq_gpio_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;
 	dreq_gpio_conf.intr_type = GPIO_INTR_DISABLE;   
-	dreq_gpio_conf.pin_bit_mask = ((uint64_t)(((uint64_t)1)<<CONFIG_GPIO_DREQ));
+	dreq_gpio_conf.pin_bit_mask = ((uint64_t)(((uint64_t)1)<<GPIO_DREQ));
 	ESP_ERROR_CHECK(gpio_config(&dreq_gpio_conf));
 
 
