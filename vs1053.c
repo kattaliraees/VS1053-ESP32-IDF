@@ -2,7 +2,6 @@
 #include "vs1053.h"
 #include <driver/spi_master.h>
 #include "driver/gpio.h"
-#include "esp_log.h"
 
 #define GPIO_SCLK = 18;
 #define GPIO_MISO = 19;
@@ -24,15 +23,15 @@ void vs1053_init() {
 	//CS, DCS, RESET GPIOs
 	gpio_pad_select_gpio(GPIO_CS);
 	gpio_set_direction(GPIO_CS, GPIO_MODE_OUTPUT);
-  
+
 	gpio_pad_select_gpio(GPIO_DCS);
 	gpio_set_direction(GPIO_DCS, GPIO_MODE_OUTPUT);
   
-  gpio_pad_select_gpio(GPIO_RESET);
-  gpio_set_direction(GPIO_RESET, GPIO_MODE_OUTPUT);
+	gpio_pad_select_gpio(GPIO_RESET);
+	gpio_set_direction(GPIO_RESET, GPIO_MODE_OUTPUT);
 
 	//DREQ GPIO as input
-  gpio_config_t dreq_gpio_conf;
+	gpio_config_t dreq_gpio_conf;
 	dreq_gpio_conf.mode = GPIO_MODE_INPUT;
 	dreq_gpio_conf.pull_up_en =	GPIO_PULLUP_DISABLE;
 	dreq_gpio_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;
@@ -50,8 +49,8 @@ void vs1053_init() {
 		.flags = SPICOMMON_BUSFLAG_MASTER
 	};
 
-  int freq = 800000;
-	spi_device_interface_config_t devcfg={
+	int freq = 800000;
+	spi_device_interface_config_t spicfg={
 		.clock_speed_hz = freq,
         .command_bits = 8,
         .address_bits = 8,
@@ -68,11 +67,10 @@ void vs1053_init() {
 	ret = spi_bus_initialize( HSPI_HOST, &buscfg, 1 );
 	assert(ret==ESP_OK);
 
-	ret = spi_bus_add_device( HSPI_HOST, &devcfg, &spi_handle);
-	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
+	ret = spi_bus_add_device( HSPI_HOST, &spicfg, &spi_handle);
 	assert(ret==ESP_OK);
 	SLEEP_MS(20);
-  gpio_set_level(CONFIG_GPIO_CS, 1);
+	gpio_set_level(CONFIG_GPIO_CS, 1);
 	gpio_set_level(CONFIG_GPIO_DCS, 1);
 	gpio_set_level(CONFIG_GPIO_RESET, 0);
 	SLEEP_MS(5);
@@ -87,11 +85,10 @@ void vs1053_init() {
 	vs1053_write_sci(SCI_AUDATA, 44101);
 	vs1053_write_sci(SCI_CLOCKF, 6 << 12);
 
-	devcfg.clock_speed_hz = 6000000;
-	devcfg.command_bits = 0;
-	devcfg.address_bits = 0;
-	ret = spi_bus_add_device( HSPI_HOST, &devcfg, &spi_handle);
-	ESP_LOGD(TAG, "spi_bus_add_device=%d",ret);
+	spicfg.clock_speed_hz = 6000000;
+	spicfg.command_bits = 0;
+	spicfg.address_bits = 0;
+	ret = spi_bus_add_device( HSPI_HOST, &spicfg, &spi_handle);
 	assert(ret==ESP_OK);
 }
 
@@ -149,13 +146,11 @@ void vs1053_write_sdi(uint8_t *data, uint8_t bytes) {
 
 	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
 
-
     spi_transaction_t SPITransaction;
     esp_err_t ret;
 
     gpio_set_level(CONFIG_GPIO_DCS, 0);
-	   
-	   
+
     memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
     SPITransaction.length = bytes * 8;
     SPITransaction.tx_buffer = data;
