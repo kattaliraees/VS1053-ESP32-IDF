@@ -69,11 +69,11 @@ void vs1053_init() {
 	ret = spi_bus_add_device( HSPI_HOST, &spicfg, &spi_handle);
 	assert(ret==ESP_OK);
 	SLEEP_MS(20);
-	gpio_set_level(CONFIG_GPIO_CS, 1);
-	gpio_set_level(CONFIG_GPIO_DCS, 1);
-	gpio_set_level(CONFIG_GPIO_RESET, 0);
+	gpio_set_level(GPIO_CS, 1);
+	gpio_set_level(GPIO_DCS, 1);
+	gpio_set_level(CGPIO_RESET, 0);
 	SLEEP_MS(5);
-	gpio_set_level(CONFIG_GPIO_RESET, 1);
+	gpio_set_level(GPIO_RESET, 1);
 
 	uint16_t reg_data = vs1053_read_sci(SCI_MODE);
 
@@ -98,9 +98,9 @@ void vs1053_write_sci(uint8_t addr, uint16_t data) {
 	spi_transaction_t SPITransaction;
 	esp_err_t ret;
 
-	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
+	while(!gpio_get_level(GPIO_DREQ)); //Wait until DREQ is high
 
-	gpio_set_level(CONFIG_GPIO_CS, 0);
+	gpio_set_level(GPIO_CS, 0);
 
 	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
 	SPITransaction.flags |= SPI_TRANS_USE_TXDATA;
@@ -112,7 +112,7 @@ void vs1053_write_sci(uint8_t addr, uint16_t data) {
 	ret = spi_device_transmit(spi_handle, &SPITransaction );
 	assert(ret==ESP_OK);
 
-	gpio_set_level(CONFIG_GPIO_CS, 1);
+	gpio_set_level(GPIO_CS, 1);
 }
 
 //For reading VS10xx register at addr
@@ -123,9 +123,9 @@ uint16_t vs1053_read_sci(uint8_t addr) {
 	spi_transaction_t SPITransaction;
 	esp_err_t ret;
 
-	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
+	while(!gpio_get_level(GPIO_DREQ)); //Wait until DREQ is high
 
-	gpio_set_level(CONFIG_GPIO_CS, 0);
+	gpio_set_level(GPIO_CS, 0);
 	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
 	SPITransaction.length=16;
 	SPITransaction.flags |= SPI_TRANS_USE_RXDATA	;
@@ -134,7 +134,7 @@ uint16_t vs1053_read_sci(uint8_t addr) {
 	ret = spi_device_transmit(spi_handle, &SPITransaction );
 	assert(ret==ESP_OK);
 	res = (((SPITransaction.rx_data[0]&0xFF)<<8) | ((SPITransaction.rx_data[1])&0xFF)) ;
-	gpio_set_level(CONFIG_GPIO_CS, 1);
+	gpio_set_level(GPIO_CS, 1);
 
 	return res;
 }
@@ -145,17 +145,17 @@ void vs1053_write_sdi(uint8_t *data, uint8_t bytes) {
 		return;//Error - too many bytes to transfer
 	}
 
-	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
+	while(!gpio_get_level(CGPIO_DREQ)); //Wait until DREQ is high
 
 	spi_transaction_t SPITransaction;
 	esp_err_t ret;
 
-	gpio_set_level(CONFIG_GPIO_DCS, 0);
+	gpio_set_level(GPIO_DCS, 0);
 
 	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
 	SPITransaction.length = bytes * 8;
 	SPITransaction.tx_buffer = data;
 	ret = spi_device_transmit(spi_handle , &SPITransaction );
 	assert(ret==ESP_OK);
-	gpio_set_level(CONFIG_GPIO_DCS, 1);
+	gpio_set_level(GPIO_DCS, 1);
 }
