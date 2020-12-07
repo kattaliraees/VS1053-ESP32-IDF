@@ -3,15 +3,14 @@
 #include <driver/spi_master.h>
 #include "driver/gpio.h"
 
-#define GPIO_SCLK = 18;
-#define GPIO_MISO = 19;
-#define GPIO_MOSI = 23;
-#define GPIO_CS 33
-#define GPIO_DCS 25
-#define GPIO_DREQ 26
-#define GPIO_RESET 27
-
-#define TAG "VS1053"
+//SPI & IO Connections
+#define GPIO_SCLK	18
+#define GPIO_MISO	19
+#define GPIO_MOSI	23
+#define GPIO_CS		33
+#define GPIO_DCS	25
+#define GPIO_DREQ	26
+#define GPIO_RESET	27
 
 spi_device_handle_t spi_handle;
 
@@ -40,7 +39,7 @@ void vs1053_init() {
 	ESP_ERROR_CHECK(gpio_config(&dreq_gpio_conf));
 
 
-    spi_bus_config_t buscfg = {
+	spi_bus_config_t buscfg = {
 		.sclk_io_num = GPIO_SCLK,
 		.mosi_io_num = GPIO_MOSI,
 		.miso_io_num = GPIO_MISO,
@@ -76,7 +75,7 @@ void vs1053_init() {
 	SLEEP_MS(5);
 	gpio_set_level(CONFIG_GPIO_RESET, 1);
 
-  uint16_t reg_data = vs1053_read_sci(SCI_MODE);
+	uint16_t reg_data = vs1053_read_sci(SCI_MODE);
 
 	if(reg_data != (SM_LINE1 | SM_SDINEW)) {
 		vs1053_write_sci(SCI_MODE, (SM_LINE1 | SM_SDINEW));
@@ -92,17 +91,18 @@ void vs1053_init() {
 	assert(ret==ESP_OK);
 }
 
+//For writing data to VS10xx registers at addr
 void vs1053_write_sci(uint8_t addr, uint16_t data) {
     
-    uint8_t d = 2;
-    spi_transaction_t SPITransaction;
+	uint8_t d = 2;
+	spi_transaction_t SPITransaction;
 	esp_err_t ret;
 
 	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
 
-    gpio_set_level(CONFIG_GPIO_CS, 0);
+	gpio_set_level(CONFIG_GPIO_CS, 0);
 
-    memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
+	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
 	SPITransaction.flags |= SPI_TRANS_USE_TXDATA;
 	SPITransaction.cmd = d;
 	SPITransaction.addr = addr;
@@ -112,19 +112,20 @@ void vs1053_write_sci(uint8_t addr, uint16_t data) {
 	ret = spi_device_transmit(spi_handle, &SPITransaction );
 	assert(ret==ESP_OK);
 
-    gpio_set_level(CONFIG_GPIO_CS, 1);
+	gpio_set_level(CONFIG_GPIO_CS, 1);
 }
 
+//For reading VS10xx register at addr
 uint16_t vs1053_read_sci(uint8_t addr) {
 
-    uint16_t res;
+	uint16_t res;
 	uint8_t d = 3;
-    spi_transaction_t SPITransaction;
+	spi_transaction_t SPITransaction;
 	esp_err_t ret;
 
 	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
 
-    gpio_set_level(CONFIG_GPIO_CS, 0);
+	gpio_set_level(CONFIG_GPIO_CS, 0);
 	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
 	SPITransaction.length=16;
 	SPITransaction.flags |= SPI_TRANS_USE_RXDATA	;
@@ -133,7 +134,7 @@ uint16_t vs1053_read_sci(uint8_t addr) {
 	ret = spi_device_transmit(spi_handle, &SPITransaction );
 	assert(ret==ESP_OK);
 	res = (((SPITransaction.rx_data[0]&0xFF)<<8) | ((SPITransaction.rx_data[1])&0xFF)) ;
-    gpio_set_level(CONFIG_GPIO_CS, 1);
+	gpio_set_level(CONFIG_GPIO_CS, 1);
 
 	return res;
 }
@@ -146,15 +147,15 @@ void vs1053_write_sdi(uint8_t *data, uint8_t bytes) {
 
 	while(!gpio_get_level(CONFIG_GPIO_DREQ)); //Wait until DREQ is high
 
-    spi_transaction_t SPITransaction;
-    esp_err_t ret;
+	spi_transaction_t SPITransaction;
+	esp_err_t ret;
 
-    gpio_set_level(CONFIG_GPIO_DCS, 0);
+	gpio_set_level(CONFIG_GPIO_DCS, 0);
 
-    memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
-    SPITransaction.length = bytes * 8;
-    SPITransaction.tx_buffer = data;
-    ret = spi_device_transmit(spi_handle , &SPITransaction );
-    assert(ret==ESP_OK);
-    gpio_set_level(CONFIG_GPIO_DCS, 1);
+	memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
+	SPITransaction.length = bytes * 8;
+	SPITransaction.tx_buffer = data;
+	ret = spi_device_transmit(spi_handle , &SPITransaction );
+	assert(ret==ESP_OK);
+	gpio_set_level(CONFIG_GPIO_DCS, 1);
 }
