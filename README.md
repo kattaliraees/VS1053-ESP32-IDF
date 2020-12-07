@@ -1,2 +1,2 @@
 # VS1053-ESP32-IDF
-VS1053 Driver using ESP-IDF for ESP32 SoCs
+Simple VS1053 Driver sample using ESP-IDF for ESP32 SoCs.
