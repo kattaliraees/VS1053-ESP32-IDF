@@ -15,6 +15,7 @@ while (1)
 
 
 //From SD Card
+//https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card
 f = fopen(MOUNT_POINT"/out2.mp3", "rb");
 while(fread(aud_buff, 1, 512, f)) {
     int j = 0;
