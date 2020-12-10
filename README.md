@@ -25,4 +25,8 @@ while(fread(aud_buff, 1, 512, f)) {
     }
 }
 fclose(f);
+```
+
+![Image of schematic](https://github.com/kattaliraees/VS1053-ESP32-IDF/blob/main/schematic.png)
+
 
