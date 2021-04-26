@@ -383,3 +383,4 @@ void vs1053_init();
 void vs1053_write_sci(uint8_t addr, uint16_t data);
 void vs1053_write_sdi(uint8_t *data, uint8_t bytes);
 uint16_t vs1053_read_sci(uint8_t addr);
+void vs1053_set_volume(uint8_t vol);

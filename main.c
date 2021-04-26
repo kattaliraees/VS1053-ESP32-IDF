@@ -8,6 +8,8 @@ void app_main(void)
 {    
     vs1053_init();
 
+    vs1053_set_volume(50); //0--100
+
     //Sending test mp3 data
     while (1)
     {
