@@ -1,4 +1,7 @@
-#include "defines.h"
+#include <stdint.h>
+
+#define SLEEP_MS(X_MS) vTaskDelay(((X_MS >= 10) ? X_MS : 10) / portTICK_PERIOD_MS)
+
 
 /*
  * VS1053.h

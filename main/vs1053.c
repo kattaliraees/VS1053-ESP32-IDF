@@ -5,6 +5,7 @@
 #include "esp_log.h"
 #include<string.h>
 
+
 static const int GPIO_SCLK = 18;
 static const int GPIO_MISO = 19;
 static const int GPIO_MOSI = 23;
@@ -87,7 +88,7 @@ void vs1053_init() {
 
 	if(reg_data != (SM_LINE1 | SM_SDINEW)) {
 
-        LOG_INFO("%d", reg_data);
+        ////LOG_INFO("%d", reg_data);
 		ESP_LOGI(TAG, "Setting mode");
 		vs1053_write_sci(SCI_MODE, (SM_LINE1 | SM_SDINEW));
 	}
@@ -103,10 +104,10 @@ void vs1053_init() {
 	}
 
 	reg_data = vs1053_read_sci(SCI_AUDATA);
-	LOG_INFO("SCI_AUDATA - %d", reg_data);
+	//LOG_INFO("SCI_AUDATA - %d", reg_data);
 
 	reg_data = vs1053_read_sci(SCI_CLOCKF);
-	LOG_INFO("SCI_CLOCKF - %d", reg_data);
+	//LOG_INFO("SCI_CLOCKF - %d", reg_data);
 	vs1053_write_sci(SCI_AUDATA, 44101); // 44.1kHz stereo
 	// The next clocksetting allows SPI clocking at 5 MHz, 4 MHz is safe then.
 	vs1053_write_sci(SCI_CLOCKF, 6 << 12); // Normal clock settings multiplyer 3.0 = 12.2 MHz
@@ -115,13 +116,13 @@ void vs1053_init() {
 	//vs1053_write_sci(0x0B, 0x0000);
 
 	reg_data = vs1053_read_sci(SCI_AUDATA);
-	LOG_INFO("SCI_AUDATA - %d", reg_data);
+	//LOG_INFO("SCI_AUDATA - %d", reg_data);
 
 	reg_data = vs1053_read_sci(SCI_CLOCKF);
-	LOG_INFO("SCI_CLOCKF - %d", reg_data);
+	//LOG_INFO("SCI_CLOCKF - %d", reg_data);
 
 	//reg_data = vs1053_read_sci(0x0B);
-	//LOG_INFO("SCI_VOL - %d", reg_data);
+	////LOG_INFO("SCI_VOL - %d", reg_data);
 
 
 	spi_device_interface_config_t devcfg_hs = devcfg;
@@ -137,7 +138,7 @@ void vs1053_init() {
 
 	if(reg_data != (SM_LINE1 | SM_SDINEW)) {
 
-        LOG_INFO("%d", reg_data);
+        //LOG_INFO("%d", reg_data);
 		ESP_LOGI(TAG, "High speed - Setting mode");
 		vs1053_write_sci(SCI_MODE, (SM_LINE1 | SM_SDINEW));
 	}
@@ -232,5 +233,5 @@ void vs1053_set_volume(uint8_t vol) {
 	vs1053_write_sci(SCI_VOL, value); // Volume left and right
 
 	uint16_t reg_data = vs1053_read_sci(SCI_VOL);
-	LOG_INFO("SCI_VOL - %d", reg_data);
+	//LOG_INFO("SCI_VOL - %d", reg_data);
 }
