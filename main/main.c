@@ -1,9 +1,6 @@
 #include "vs1053.h"
-//#include <freertos/task.h>
-//#include "testmp3.h"
+#include "testmp3.h"
 
-uint8_t outputfile_mp3_len = 0;
-uint8_t outputfile_mp3[] = {0x00, 0x00, 0x00};
 
 void app_main(void)
 {    

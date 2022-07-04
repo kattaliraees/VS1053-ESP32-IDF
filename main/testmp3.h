@@ -4113,6 +4113,6 @@ uint8_t outputfile_mp3[] = {
   0x74, 0x20, 0x2e, 0x01, 0x43, 0x4c, 0xf8, 0xac, 0x20
 };
 
-const uint8_t outputfile_mp3_len = 49197;
+uint8_t outputfile_mp3_len = 49197;
 
 #endif /* INC_TESTMP3_H_ */
