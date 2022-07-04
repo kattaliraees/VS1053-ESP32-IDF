@@ -3,5 +3,10 @@
     "idf.openOcdConfigs": [
         "interface/ftdi/esp32_devkitj_v1.cfg",
         "target/esp32.cfg"
-    ]
+    ],
+    "files.associations": {
+        "common.h": "c",
+        "testmp3.h": "c",
+        "string.h": "c"
+    }
 }

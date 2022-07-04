@@ -1,8 +1,9 @@
-#include "esp_system.h"
 #include "vs1053.h"
-#include "testmp3.h"
+//#include <freertos/task.h>
+//#include "testmp3.h"
 
-#define SLEEP_MS(X_MS) vTaskDelay(((X_MS >= 10) ? X_MS : 10) / portTICK_PERIOD_MS)
+uint8_t outputfile_mp3_len = 0;
+uint8_t outputfile_mp3[] = {0x00, 0x00, 0x00};
 
 void app_main(void)
 {    

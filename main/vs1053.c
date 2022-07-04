@@ -1,10 +1,10 @@
 
 #include "vs1053.h"
 #include <driver/spi_master.h>
+//#include <freertos/task.h>
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include<string.h>
-
 
 static const int GPIO_SCLK = 18;
 static const int GPIO_MISO = 19;
@@ -17,6 +17,8 @@ static const int GPIO_MOSI = 23;
 
 #define TAG "VS1053"
 static const char* LOG_TAG = "VS1053";
+
+//#define SLEEP_MS(X_MS) vTaskDelay(((X_MS >= 10) ? X_MS : 10) / portTICK_PERIOD_MS)
 
 
 spi_device_handle_t spi_handle_low_speed;
